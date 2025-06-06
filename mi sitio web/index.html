@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Primeros pasos - Django y DRF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1, h2 {
+      color: #005a9c;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: monospace;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Primeros pasos para la creación de una aplicación Web con Django y DRF</h1>
+
+  <section>
+    <h2>A. Instalar herramientas necesarias</h2>
+    <ul>
+      <li>Python (>= 3.8)</li>
+      <li>Git</li>
+      <li>Editor de código (VS Code, etc.)</li>
+      <li>PostgreSQL (opcional)</li>
+      <li>Navegador Web</li>
+      <li>Cuenta en GitHub</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>B. Crear entorno virtual</h2>
+    <pre><code>python -m venv venv</code></pre>
+    <p><strong>Activar:</strong></p>
+    <ul>
+      <li>Windows: <code>venv\Scripts\activate</code></li>
+      <li>Linux/Mac: <code>source venv/bin/activate</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>C. Inicializar repositorio Git</h2>
+    <pre><code>git init
+git remote add origin https://github.com/usuario/repositorio.git
+echo venv/ > .gitignore</code></pre>
+  </section>
+
+  <section>
+    <h2>D. Instalar Django y DRF</h2>
+    <pre><code>pip install django djangorestframework</code></pre>
+  </section>
+
+  <section>
+    <h2>E. Crear el proyecto Django</h2>
+    <pre><code>django-admin startproject mi_proyecto .</code></pre>
+  </section>
+
+  <section>
+    <h2>F. Crear la aplicación Web</h2>
+    <pre><code>python manage.py startapp mi_app</code></pre>
+    <p>Añadir <code>'mi_app'</code> y <code>'rest_framework'</code> a <code>INSTALLED_APPS</code>.</p>
+  </section>
+
+  <section>
+    <h2>G. Crear modelos</h2>
+    <pre><code>from django.db import models
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=6, decimal_places=2)
+</code></pre>
+  </section>
+
+  <section>
+    <h2>H. Crear serializadores</h2>
+    <pre><code>from rest_framework import serializers
+from .models import Producto
+
+class ProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = '__all__'
+</code></pre>
+  </section>
+
+  <section>
+    <h2>I. Crear ViewSets</h2>
+    <pre><code>from rest_framework import viewsets
+from .models import Producto
+from .serializers import ProductoSerializer
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+</code></pre>
+  </section>
+
+  <section>
+    <h2>J. Crear Rutas (URLs)</h2>
+    <p><strong>mi_app/urls.py:</strong></p>
+    <pre><code>from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ProductoViewSet
+
+router = DefaultRouter()
+router.register(r'productos', ProductoViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]</code></pre>
+    <p><strong>mi_proyecto/urls.py:</strong></p>
+    <pre><code>from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('mi_app.urls')),
+]</code></pre>
+  </section>
+
+  <section>
+    <h2>K. Migraciones y carga de datos</h2>
+    <pre><code>python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser</code></pre>
+  </section>
+
+  <section>
+    <h2>Subir a GitHub</h2>
+    <pre><code>git add .
+git commit -m "Primeros pasos del proyecto Django con DRF"
+git push -u origin main</code></pre>
+  </section>
+</body>
+</html>

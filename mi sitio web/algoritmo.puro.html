@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Algoritmo - Pasos para Aplicación Web</title>
+</head>
+<body>
+<pre><code>
+# A. Instalar herramientas necesarias
+- Python (>= 3.8)
+- Git
+- Editor de código (VS Code, etc.)
+- PostgreSQL (opcional)
+- Navegador Web
+- Cuenta en GitHub
+
+# B. Crear entorno virtual
+python -m venv venv
+
+# Activar:
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# C. Inicializar repositorio Git
+git init
+git remote add origin https://github.com/usuario/repositorio.git
+echo venv/ > .gitignore
+
+# D. Instalar Django y DRF
+pip install django djangorestframework
+
+# E. Crear el proyecto Django
+django-admin startproject mi_proyecto .
+
+# F. Crear la aplicación Web
+python manage.py startapp mi_app
+
+# Agregar a INSTALLED_APPS:
+'mi_app',
+'rest_framework',
+
+# G. Crear modelos
+from django.db import models
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=6, decimal_places=2)
+
+# H. Crear serializadores
+from rest_framework import serializers
+from .models import Producto
+
+class ProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = '__all__'
+
+# I. Crear ViewSets
+from rest_framework import viewsets
+from .models import Producto
+from .serializers import ProductoSerializer
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+
+# J. Crear Rutas
+
+# mi_app/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import ProductoViewSet
+
+router = DefaultRouter()
+router.register(r'productos', ProductoViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+
+# mi_proyecto/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('mi_app.urls')),
+]
+
+# K. Migraciones y superusuario
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+
+# Subir a GitHub
+git add .
+git commit -m "Primeros pasos del proyecto Django con DRF"
+git push -u origin main
+</code></pre>
+</body>
+</html>
